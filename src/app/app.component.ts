@@ -1,20 +1,25 @@
-import { Component } from '@angular/core';
+import { Component,  ViewEncapsulation,  } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { GoogleTagManagerModule, GoogleTagManagerService } from 'angular-google-tag-manager';
+import { GoogleAnalyticsService } from '../infra/service/google-analytics/google-analytics.service';
+import { FacebookPixelService } from '../infra/service/facebook-pixel/facebook-pixel.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
 
-  imports: [RouterOutlet,],
+  imports: [RouterOutlet ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.sass'
+  styleUrl: './app.component.sass',
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   title = 'analytics'; 
 
-  constructor(private router: Router, private gtmService: GoogleTagManagerService,
-    ) {
+  constructor(
+    private router: Router, 
+    private googleAnalytics: GoogleAnalyticsService,
+    private pixel: FacebookPixelService
+  ) {
     this.router.events.forEach(async (item) => {
       if (item instanceof NavigationEnd) {
         const gtmTag = {
@@ -24,20 +29,14 @@ export class AppComponent {
 
         this.setAnalytics();
 
-    }
+      }
     });
   
   }
 
 
-  async setAnalytics() {
-    try {
-      console.log(this.gtmService.googleTagManagerId)
-      const resp = await this.gtmService.addGtmToDom();
-
-      console.log("resp", resp);
-     } catch(e) {
-      console.log(e);
-     }
+  setAnalytics() {
+    this.googleAnalytics.initialize();
+    this.pixel.initialize();
   }
 }

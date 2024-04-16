@@ -1,4 +1,5 @@
 export const environment = {
     production: false,
-    GoogleTagManagerID: "GoogleTagManagerID"
+    mainGoogleTagManagerID: "GTM-N4QLG3VQ",
+    facebookPixelID: "3206921399441816"
   };
